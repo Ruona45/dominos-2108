@@ -161,7 +161,23 @@ module DomsMatch where
 
     scoreBoard :: Board -> Bool -> Int
     scoreBoard _ _ = 0
-    
+
+    -- Create a function for the fives and threes scoring using guards
+    fivesAnd3Scoring :: Int -> Int
+    fivesAnd3Scoring pipTotal
+      | pipTotal == 3 = 1
+      | pipTotal == 5 = 1
+      | pipTotal == 6 = 2
+      | pipTotal == 9 = 3
+      | pipTotal == 10 = 2
+      | pipTotal == 12 = 4
+      | pipTotal == 15 = 8
+      | pipTotal == 18 = 6
+      | pipTotal == 20 = 4
+      | otherwise = 0
+
+
+
     blocked :: Hand -> Board -> Bool
     blocked _ _ = True
        
