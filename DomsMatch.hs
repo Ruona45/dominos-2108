@@ -30,7 +30,8 @@ module DomsMatch where
     import System.Random
     import Data.List
     import Data.Ord (comparing)
-
+    import Control.Arrow (ArrowChoice(left))
+    
 
     -- types used in this module
     type Domino = (Int, Int) -- a single domino
@@ -159,8 +160,22 @@ module DomsMatch where
                  | otherwise    = new
               Just newBoard = maybeBoard -- extract the new board from the Maybe type
 
+
+    {- scoreBoard: takes a Board and a Bool as arguements where if the Bool is 
+      true then the domino played was the last domino in the hand. It returns
+      the score based on the board state
+    -}
     scoreBoard :: Board -> Bool -> Int
-    scoreBoard _ _ = 0
+    scoreBoard InitState _ = 0
+    scoreBoard (State leftDomino rightDomino history) isLastInHand
+      | isLastInHand = calculateScore leftDomino + calculateScore rightDomino
+      | otherwise = calculateScore leftDomino
+      where
+        calculateScore domino = fivesAnd3Scoring (pipTotal domino)
+    
+    pipTotal :: Domino -> Int
+    pipTotal (x,y) = x + y
+
 
     {- fivesAnd3Scoring: given the total number of pips, gets the corresponding 
     score and returns the score
@@ -182,6 +197,18 @@ module DomsMatch where
 
     blocked :: Hand -> Board -> Bool
     blocked _ _ = True
+
+    {- playLeft: checks if any dominos can be played to the 
+      left of the board
+    -}
+    playLeft :: Domino -> Domino -> Bool
+    playLeft () = 
+
+    {- playRight: checks if any dominos can be played to the right of 
+      the board
+    -}
+    playRight :: Domino -> Domino -> Bool
+    playRight () ()= 
        
     playDom :: Player -> Domino -> Board -> End -> Maybe Board
     playDom _ _ _ _ = Nothing
