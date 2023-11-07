@@ -162,7 +162,9 @@ module DomsMatch where
     scoreBoard :: Board -> Bool -> Int
     scoreBoard _ _ = 0
 
-    -- Create a function for the fives and threes scoring using guards
+    {- fivesAnd3Scoring: given the total number of pips, gets the corresponding 
+    score and returns the score
+    -}
     fivesAnd3Scoring :: Int -> Int
     fivesAnd3Scoring pipTotal
       | pipTotal == 3 = 1
