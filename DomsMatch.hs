@@ -209,7 +209,6 @@ module DomsMatch where
     -}
     canPlay :: Domino -> Board -> Bool
     canPlay domino (State left right _) = canPlayLeft domino left || canPlayRight domino right 
-    canPlay _ _ = False 
     {- canPlayLeft: checks if any dominos can be played to the 
       left of the board
     -}
@@ -221,6 +220,10 @@ module DomsMatch where
     -}
     canPlayRight :: Domino -> Domino -> Bool
     canPlayRight (x,y) (l,r) = x == r || y == r
-       
+
+    {- playDom: takes a domino, board and end as arguments and checks if it is
+      possible to play the domino at the given end and if possible play it.
+      It returns a maybe board.
+    -}   
     playDom :: Player -> Domino -> Board -> End -> Maybe Board
     playDom _ _ _ _ = Nothing
