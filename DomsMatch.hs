@@ -201,14 +201,14 @@ module DomsMatch where
     {- playLeft: checks if any dominos can be played to the 
       left of the board
     -}
-    playLeft :: Domino -> Domino -> Bool
-    playLeft (x,y) (l,r) = x == l || y == l
+    canPlayLeft :: Domino -> Domino -> Bool
+    canPlayLeft (x,y) (l,r) = x == l || y == l
 
     {- playRight: checks if any dominos can be played to the right of 
       the board
     -}
-    playRight :: Domino -> Domino -> Bool
-    playRight (x,y) (l,r) = x == r || y == r
+    canPlayRight :: Domino -> Domino -> Bool
+    canPlayRight (x,y) (l,r) = x == r || y == r
        
     playDom :: Player -> Domino -> Board -> End -> Maybe Board
     playDom _ _ _ _ = Nothing
