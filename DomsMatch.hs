@@ -194,17 +194,29 @@ module DomsMatch where
       | otherwise = 0
 
 
-
+    {- blocked: takes hand and board as arguemnts and checks
+     if all dominos in the hand cannot be played on the board
+    -}
     blocked :: Hand -> Board -> Bool
-    blocked _ _ = True
+    blocked _ InitState = False -- can't be blocked at the beginning of the game
+    blocked [] _ = True -- if there is nothing in hand then they are blocked 
+    blocked hand board = all (\domino -> not (canPlay domino board)) hand
 
-    {- playLeft: checks if any dominos can be played to the 
+
+    {- canPlay: takes domino and board as arguments and checks if the domino can
+      be played on the board using the canPlayLeft and canPlayRight function
+      as welll as pattern matching to extract the left and right dominos 
+    -}
+    canPlay :: Domino -> Board -> Bool
+    canPlay domino (State left right _) = canPlayLeft domino left || canPlayRight domino right 
+    canPlay _ _ = False 
+    {- canPlayLeft: checks if any dominos can be played to the 
       left of the board
     -}
     canPlayLeft :: Domino -> Domino -> Bool
     canPlayLeft (x,y) (l,r) = x == l || y == l
 
-    {- playRight: checks if any dominos can be played to the right of 
+    {- canPlayRight: checks if any dominos can be played to the right of 
       the board
     -}
     canPlayRight :: Domino -> Domino -> Bool
