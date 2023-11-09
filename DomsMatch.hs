@@ -199,11 +199,11 @@ module DomsMatch where
     blocked :: Hand -> Board -> Bool
     blocked _ InitState = False -- can't be blocked at the beginning of the game
     blocked [] _ = True -- if there is nothing in hand then they are blocked 
-    blocked hand board = all (\domino -> not (canPlay domino board)) hand
+    blocked hand board = all (\domino -> not (canPlay domino L board) && (canPlay domino R board)) hand
 
 
     {- canPlay: takes domino and board and end as arguments and checks if the domino can
-      be played on the given ends of the board
+      be played on the given end of the board
     -}
     canPlay :: Domino -> End -> Board -> Bool
     canPlay _ _ InitState = True -- If the board is in the inital state then the domino can be played at any end
