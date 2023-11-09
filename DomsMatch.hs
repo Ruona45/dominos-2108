@@ -167,6 +167,8 @@ module DomsMatch where
     -}
     scoreBoard :: Board -> Bool -> Int
     scoreBoard InitState _ = 0 -- If the board is in the inital state the score has to be zero
+    scoreBoard (State left right history) isLastDominoInHand = 
+
     
 
     {- pipTotal: used to get the sum of the pips on a given domino
@@ -200,23 +202,14 @@ module DomsMatch where
     blocked hand board = all (\domino -> not (canPlay domino board)) hand
 
 
-    {- canPlay: takes domino and board as arguments and checks if the domino can
-      be played on the board using the canPlayLeft and canPlayRight function
-      as welll as pattern matching to extract the left and right dominos 
+    {- canPlay: takes domino and board and end as arguments and checks if the domino can
+      be played on the given ends of the board
     -}
-    canPlay :: Domino -> Board -> Bool
-    canPlay domino (State left right _) = canPlayLeft domino left || canPlayRight domino right 
-    {- canPlayLeft: checks if any dominos can be played to the 
-      left of the board
-    -}
-    canPlayLeft :: Domino -> Domino -> Bool
-    canPlayLeft (x,y) (l,r) = x == l || y == l
-
-    {- canPlayRight: checks if any dominos can be played to the right of 
-      the board
-    -}
-    canPlayRight :: Domino -> Domino -> Bool
-    canPlayRight (x,y) (l,r) = x == r || y == r
+    canPlay :: Domino -> End -> Board -> Bool
+    canPlay _ _ InitState = True -- If the board is in the inital state then the domino can be played at any end
+    canPlay (x,y) end (State left right _) = case end of
+      L -> x == left || y == left
+      R -> x == right || y == right
 
     {- playDom: takes a domino, board and end as arguments and checks if it is
       possible to play the domino at the given end and if possible play it.
@@ -225,4 +218,4 @@ module DomsMatch where
     playDom :: Player -> Domino -> Board -> End -> Maybe Board
     playDom _ _ _ _ = Nothing
     -- If the board is in the inital state any domino would be able to played 
-    playDom plyer domino InitState
+    -- playDom player domino InitState end = Just Board 
