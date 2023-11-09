@@ -167,14 +167,12 @@ module DomsMatch where
     -}
     scoreBoard :: Board -> Bool -> Int
     scoreBoard InitState _ = 0 -- If the board is in the inital state the score has to be zero
-    scoreBoard (State left right history) isLastDominoInHand = 
-
-    
-
-    {- pipTotal: used to get the sum of the pips on a given domino
-    -}
-    pipTotal :: Domino -> Int
-    pipTotal (x,y) = x + y
+    scoreBoard (State left right history) isLastDominoInHand
+      | isLastDominoInHand = baseScore + 1 
+      | otherwise = baseScore 
+      where
+        pipTotal = fst left + snd right
+        baseScore = fivesAnd3Scoring pipTotal
 
     {- fivesAnd3Scoring: given the total number of pips, gets the corresponding 
     score and returns the score
@@ -208,8 +206,8 @@ module DomsMatch where
     canPlay :: Domino -> End -> Board -> Bool
     canPlay _ _ InitState = True -- If the board is in the inital state then the domino can be played at any end
     canPlay (x,y) end (State left right _) = case end of
-      L -> x == left || y == left
-      R -> x == right || y == right
+      L -> x == fst left || y == fst left
+      R -> x == snd right || y == snd right
 
     {- playDom: takes a domino, board and end as arguments and checks if it is
       possible to play the domino at the given end and if possible play it.
