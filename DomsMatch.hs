@@ -222,10 +222,21 @@ module DomsMatch where
     -- The canPlay function made earlier will be used here
     -- For the Left end
     playDom player domino (State left right history) L
-      | canPlay domino L (State left right history) = Just ()
+    -- Updates the history by adding to the front of the list
+      | canPlay domino L (State left right history) = Just newState
       | otherwise = Nothing
+      where
+        newHistory = (domino, player, length history +1): history
+        newState = State newLeft right newHistory
+        newLeft = if fst domino == snd right then (snd domino, fst domino) else domino
     
     -- For the Right end
     playDom player domino (State left right history) R
-      | canPlay domino R (State left right history) = Just ()
+    -- Updates the history by adding to the end of the list
+      | canPlay domino R (State left right history) = Just newState
       | otherwise = Nothing
+      where 
+        newHistory = history ++ [(domino, player, length history +1)]
+        newState = State left newRight newHistory
+        newRight = if fst domino == snd right then (snd domino, fst domino) else domino
+        
