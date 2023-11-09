@@ -25,13 +25,14 @@
    including (but not limited to) sensible naming, good functional decomposition, good layout,
    and good comments.
  -}
+{-# OPTIONS_GHC -Wno-overlapping-patterns #-}
 
 module DomsMatch where
     import System.Random
     import Data.List
     import Data.Ord (comparing)
     import Control.Arrow (ArrowChoice(left))
-    
+
 
     -- types used in this module
     type Domino = (Int, Int) -- a single domino
@@ -104,7 +105,7 @@ module DomsMatch where
           playGame' p1 p2 firstPlayer gen (s1, s2)
             | s1 == target = P1
             | s2 == target = P2
-            | otherwise   
+            | otherwise
                 = let
                       newScores = playDomsRound handSize target p1 p2 firstPlayer currentG (s1, s2)
                       (currentG, nextG) = split gen
@@ -168,8 +169,8 @@ module DomsMatch where
     scoreBoard :: Board -> Bool -> Int
     scoreBoard InitState _ = 0 -- If the board is in the inital state the score has to be zero
     scoreBoard (State left right history) isLastDominoInHand
-      | isLastDominoInHand = baseScore + 1 
-      | otherwise = baseScore 
+      | isLastDominoInHand = baseScore + 1
+      | otherwise = baseScore
       where
         pipTotal = fst left + snd right
         baseScore = fivesAnd3Scoring pipTotal
@@ -197,7 +198,7 @@ module DomsMatch where
     blocked :: Hand -> Board -> Bool
     blocked _ InitState = False -- can't be blocked at the beginning of the game
     blocked [] _ = True -- if there is nothing in hand then they are blocked 
-    blocked hand board = all (\domino -> not (canPlay domino L board) && (canPlay domino R board)) hand
+    blocked hand board = all (\domino -> not (canPlay domino L board) && canPlay domino R board) hand
 
 
     {- canPlay: takes domino and board and end as arguments and checks if the domino can
@@ -205,15 +206,26 @@ module DomsMatch where
     -}
     canPlay :: Domino -> End -> Board -> Bool
     canPlay _ _ InitState = True -- If the board is in the inital state then the domino can be played at any end
-    canPlay (x,y) end (State left right _) = case end of
-      L -> x == fst left || y == fst left
-      R -> x == snd right || y == snd right
+    canPlay (x,y) L (State (left, _)_ _) = x == left || y == left
+    canPlay (x,y) R (State _ (_, right) _) = x == right || y == right
 
     {- playDom: takes a domino, board and end as arguments and checks if it is
       possible to play the domino at the given end and if possible play it.
       It returns a maybe board.
-    -}   
+    -}
     playDom :: Player -> Domino -> Board -> End -> Maybe Board
-    playDom _ _ _ _ = Nothing
-    -- If the board is in the inital state any domino would be able to played 
-    -- playDom player domino InitState end = Just Board 
+    {-  If the board is in the inital state any domino would be able to played
+     and would be added to the history as the first move to be played
+    -}
+    playDom player domino InitState end = Just (State domino domino [(domino, player, 1)])
+    -- Then depending on which end is given see if the domino can be played on the end
+    -- The canPlay function made earlier will be used here
+    -- For the Left end
+    playDom player domino (State left right history) L
+      | canPlay domino L (State left right history) = Just ()
+      | otherwise = Nothing
+    
+    -- For the Right end
+    playDom player domino (State left right history) R
+      | canPlay domino R (State left right history) = Just ()
+      | otherwise = Nothing
