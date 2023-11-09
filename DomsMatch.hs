@@ -166,16 +166,13 @@ module DomsMatch where
       the score based on the board state
     -}
     scoreBoard :: Board -> Bool -> Int
-    scoreBoard InitState _ = 0
-    scoreBoard (State leftDomino rightDomino history) isLastInHand
-      | isLastInHand = calculateScore leftDomino + calculateScore rightDomino
-      | otherwise = calculateScore leftDomino
-      where
-        calculateScore domino = fivesAnd3Scoring (pipTotal domino)
+    scoreBoard InitState _ = 0 -- If the board is in the inital state the score has to be zero
     
+
+    {- pipTotal: used to get the sum of the pips on a given domino
+    -}
     pipTotal :: Domino -> Int
     pipTotal (x,y) = x + y
-
 
     {- fivesAnd3Scoring: given the total number of pips, gets the corresponding 
     score and returns the score
@@ -227,3 +224,5 @@ module DomsMatch where
     -}   
     playDom :: Player -> Domino -> Board -> End -> Maybe Board
     playDom _ _ _ _ = Nothing
+    -- If the board is in the inital state any domino would be able to played 
+    playDom plyer domino InitState
